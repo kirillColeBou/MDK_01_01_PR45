@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace API_Тепляков.Controllers
 {
-    [Route("api/TaskController")]
-    public class TaskController : Controller
+    [Route("api/TasksController")]
+    public class TasksController : Controller
     {
         /// <summary>
         /// Получение списка задач
@@ -18,18 +18,18 @@ namespace API_Тепляков.Controllers
         /// <response code="500">При выполнении запроса возникли ошибки</response>
         [Route("List")]
         [HttpGet]
-        [ProducesResponseType(typeof(List<Task>), 200)]
+        [ProducesResponseType(typeof(List<Tasks>), 200)]
         [ProducesResponseType(500)]
         public ActionResult List()
         {
             try
             {
-                IEnumerable<Task> Tasks = new TaskContext().Tasks;
+                IEnumerable<Tasks> Tasks = new TasksContext().Tasks;
                 return Json(Tasks);
             }
-            catch(Exception e)
+            catch (Exception exp)
             {
-                return StatusCode(500);
+                return StatusCode(500, exp.Message);
             }
         }
         /// <summary>
@@ -40,13 +40,13 @@ namespace API_Тепляков.Controllers
         /// <response code="500">При выполнении запроса возникли ошибки</response>
         [Route("Item")]
         [HttpGet]
-        [ProducesResponseType(typeof(Task), 200)]
+        [ProducesResponseType(typeof(Tasks), 200)]
         [ProducesResponseType(500)]
         public ActionResult Item(int id)
         {
             try
             {
-                Task Task = new TaskContext().Tasks.First(x => x.Id == id);
+                Tasks Task = new TasksContext().Tasks.First(x => x.Id == id);
                 return Json(Task);
             }
             catch (Exception e)

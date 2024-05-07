@@ -25,7 +25,7 @@ namespace API_Тепляков
                     Title = "Руководство для пользования запросов",
                     Description = "Полное руководство для использования запросов находящихся в проекте"
                 });
-                var filePath = Path.Combine(System.AppContext.BaseDirectory, "ASP_GET.xml");
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, "API_Тепляков.xml");
                 c.IncludeXmlComments(filePath);
             });
         }

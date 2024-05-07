@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_Тепляков.Context
 {
-    public class TaskContext : DbContext
+    public class TasksContext : DbContext
     {
         /// <summary>
         /// Данные из базы данных
         /// </summary>
-        public DbSet<Task> Tasks { get; set; }
+        public DbSet<Tasks> Tasks { get; set; }
         /// <summary>
         /// Конструктор контекста
         /// </summary>
-        public TaskContext()
+        public TasksContext()
         {
             Database.EnsureCreated();
             Tasks.Load();

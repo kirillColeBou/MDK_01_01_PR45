@@ -1,15 +1,17 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace API_Тепляков.Model
 {
     /// <summary>
     /// Задачи
     /// </summary>
-    public class Task
+    public class Tasks
     {
         /// <summary>
         /// Код
         /// </summary>
+        [Key]
         public int Id { get; set; }
         /// <summary>
         /// Наименование
@@ -18,11 +20,11 @@ namespace API_Тепляков.Model
         /// <summary>
         /// Приоритет
         /// </summary>
-        public string Priority { get; set; }
+        public int PriorityId { get; set; }
         /// <summary>
         /// Дата выполнения
         /// </summary>
-        public DateTime DataExecute { get; set; }
+        public DateTime DateExecute { get; set; }
         /// <summary>
         /// Комментарий
         /// </summary>
