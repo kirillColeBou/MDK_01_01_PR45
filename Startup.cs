@@ -25,6 +25,12 @@ namespace API_Тепляков
                     Title = "Руководство для пользования запросов",
                     Description = "Полное руководство для использования запросов находящихся в проекте"
                 });
+                c.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Version = "v2",
+                    Title = "Руководство для пользования запросов",
+                    Description = "Полное руководство для использования запросов находящихся в проекте"
+                });
                 var filePath = Path.Combine(System.AppContext.BaseDirectory, "API_Тепляков.xml");
                 c.IncludeXmlComments(filePath);
             });
@@ -36,7 +42,10 @@ namespace API_Тепляков
             app.UseStatusCodePages();
             app.UseMvcWithDefaultRoute();
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Запросы GET"));
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Запросы GET");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "Запросы POST");
+            });
         }
     }
 }
