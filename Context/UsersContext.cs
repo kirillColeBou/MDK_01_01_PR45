@@ -21,6 +21,6 @@ namespace API_Тепляков.Context
         /// Переопределяем метод конфигурации
         /// </summary>
         /// <param name="optionsBuilder"></param>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseMySql("server=localhost;uid=root;pwd=root;database=TaskManager", new MySqlServerVersion(new System.Version(8, 0, 11)));
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseMySql("server=localhost;uid=root;database=TaskManager", new MySqlServerVersion(new System.Version(8, 0, 11)));
     }
 }
