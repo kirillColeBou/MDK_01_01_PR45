@@ -44,12 +44,14 @@ namespace API_Тепляков.Controllers
         /// <param name="Login">Логин</param>
         /// <param name="Password">Пароль</param>
         /// <returns>Данный метод предназначен для регистрации пользователя на сайте</returns>
-        /// /// <response code="200">Пользователь успешно зарегистрирован</response>
-        /// /// <response code="403">Ошибка запроса, данные не указаны</response>
-        /// /// <response code="500">При выполнении запроса возникла ошибка</response>
+        /// <response code="200">Пользователь успешно зарегистрирован</response>
+        /// <response code="401">Пользователь с такими данными уже существует</response>
+        /// <response code="403">Ошибка запроса, данные не указаны</response>
+        /// <response code="500">При выполнении запроса возникла ошибка</response>
         [Route("RegIn")]
         [HttpPost]
         [ProducesResponseType(typeof(Users), 200)]
+        [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         public ActionResult RegIn([FromForm] string Login, [FromForm] string Password)
@@ -58,14 +60,19 @@ namespace API_Тепляков.Controllers
             try
             {
                 var newUser = new UsersContext();
-                Users User = new Users()
+                if (newUser.Users.First(x => x.Login == Login && x.Password == Password) != null) return StatusCode(401);
+                else
                 {
-                    Login = Login,
-                    Password = Password
-                };
-                newUser.Users.Add(User);
-                newUser.SaveChanges();
-                return Json(newUser);
+                    Users User = new Users()
+                    {
+                        Login = Login,
+                        Password = Password
+                    };
+                    newUser.Users.Add(User);
+                    newUser.SaveChanges();
+                    return Json(newUser);
+                }
+                
             }
             catch (Exception ex)
             {
