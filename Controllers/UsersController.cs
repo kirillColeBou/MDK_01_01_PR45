@@ -1,9 +1,10 @@
 ﻿using API_Тепляков.Context;
 using API_Тепляков.Model;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace API_Тепляков.Controllers
 {
@@ -60,13 +61,14 @@ namespace API_Тепляков.Controllers
             try
             {
                 var newUser = new UsersContext();
-                if (newUser.Users.First(x => x.Login == Login && x.Password == Password) != null) return StatusCode(401);
+                if (newUser.Users.FirstOrDefault(x => x.Login == Login && x.Password == Password) != null) return StatusCode(401);
                 else
                 {
+                    string hashPassword = Hash(Password);
                     Users User = new Users()
                     {
                         Login = Login,
-                        Password = Password
+                        Password = hashPassword
                     };
                     newUser.Users.Add(User);
                     newUser.SaveChanges();
@@ -77,6 +79,17 @@ namespace API_Тепляков.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+
+        private string Hash(string password)
+        {
+            using (MD5 md5Hash = MD5.Create())
+            {
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+                StringBuilder sBuilder = new StringBuilder();
+                for (int i = 0; i < data.Length; i++) sBuilder.Append(data[i].ToString("x2"));
+                return sBuilder.ToString();
             }
         }
     }
