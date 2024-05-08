@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API_Тепляков.Controllers
 {
     [Route("api/TechniqueController")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class TechniqueController : Controller
     {
         /// <summary>

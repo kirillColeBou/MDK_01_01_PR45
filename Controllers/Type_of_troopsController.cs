@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API_Тепляков.Controllers
 {
     [Route("api/Type_of_troopsController")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class Type_of_troopsController : Controller
     {
         /// <summary>

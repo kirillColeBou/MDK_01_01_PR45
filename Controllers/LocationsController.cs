@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API_Тепляков.Controllers
 {
     [Route("api/LocationsController")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class LocationsController : Controller
     {
         /// <summary>
