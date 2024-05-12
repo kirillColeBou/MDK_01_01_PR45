@@ -56,5 +56,62 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+        /// <summary>
+        /// Метод добавления страны
+        /// </summary>
+        /// <param name="country">Данные о стране</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод добавляет страну в базу данных</remarks>
+        [Route("Add")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Add([FromForm] Country country)
+        {
+            try
+            {
+                CountryContext countryContext = new CountryContext();
+                countryContext.Country.Add(country);
+                countryContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления страны
+        /// </summary>
+        /// <param name="id">Идентификатор страны</param>
+        /// <param name="country">Данные о стране</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о стране в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Country country)
+        {
+            try
+            {
+                CountryContext countryContext = new CountryContext();
+                var findCountry = countryContext.Country.FirstOrDefault(x => x.Id == id);
+                if (findCountry != null)
+                {
+                    findCountry.Name = country.Name;
+                    countryContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Страна не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

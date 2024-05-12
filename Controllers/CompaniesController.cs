@@ -56,5 +56,66 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+        /// <summary>
+        /// Метод добавления роты
+        /// </summary>
+        /// <param name="companies">Данные о роте</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод добавляет роту в базу данных</remarks>
+        [Route("Add")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Add([FromForm] Companies companies)
+        {
+            try
+            {
+                CompaniesContext companiesContext = new CompaniesContext();
+                companiesContext.Companies.Add(companies);
+                companiesContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления задачи
+        /// </summary>
+        /// <param name="id">Идентификатор задачи</param>
+        /// <param name="companies">Данные о задаче</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о задаче в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Companies companies)
+        {
+            try
+            {
+                CompaniesContext companiesContext = new CompaniesContext();
+                var findCompanies = companiesContext.Companies.FirstOrDefault(x => x.Id_companies == id);
+                if (findCompanies != null)
+                {
+                    findCompanies.Name_companies = companies.Name_companies;
+                    findCompanies.Commander = companies.Commander;
+                    findCompanies.Type_of_troops = companies.Type_of_troops;
+                    findCompanies.Date_foundation = companies.Date_foundation;
+                    findCompanies.Date_update_information = companies.Date_update_information;
+                    companiesContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Рота не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

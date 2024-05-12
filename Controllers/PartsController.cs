@@ -56,5 +56,64 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+        /// <summary>
+        /// Метод добавления части
+        /// </summary>
+        /// <param name="parts">Данные о части</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод добавляет часть в базу данных</remarks>
+        [Route("Add")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Add([FromForm] Parts parts)
+        {
+            try
+            {
+                PartsContext partsContext = new PartsContext();
+                partsContext.Parts.Add(parts);
+                partsContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления части
+        /// </summary>
+        /// <param name="id">Идентификатор части</param>
+        /// <param name="parts">Данные о части</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о части в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Parts parts)
+        {
+            try
+            {
+                PartsContext partsContext = new PartsContext();
+                var findParts = partsContext.Parts.FirstOrDefault(x => x.Id_part == id);
+                if (findParts != null)
+                {
+                    findParts.Locations = parts.Locations;
+                    findParts.Companies = parts.Companies;
+                    findParts.Date_of_foundation = parts.Date_of_foundation;
+                    partsContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Часть не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

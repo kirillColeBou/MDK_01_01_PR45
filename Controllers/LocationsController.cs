@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis;
 
 namespace API_Тепляков.Controllers
 {
@@ -50,6 +51,67 @@ namespace API_Тепляков.Controllers
             {
                 Locations Locations = new LocationsContext().Locations.First(x => x.Id_locations == id);
                 return Json(Locations);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод добавления места дислокации
+        /// </summary>
+        /// <param name="locations">Данные о месте дислокации</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод добавляет место дислокации в базу данных</remarks>
+        [Route("Add")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Add([FromForm] Locations locations)
+        {
+            try
+            {
+                LocationsContext locationsContext = new LocationsContext();
+                locationsContext.Locations.Add(locations);
+                locationsContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления места дислокации
+        /// </summary>
+        /// <param name="id">Идентификатор места дислокации</param>
+        /// <param name="locations">Данные о месте дислокации</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о месте дислокации в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Locations locations)
+        {
+            try
+            {
+                LocationsContext locationsContext = new LocationsContext();
+                var findLocations = locationsContext.Locations.FirstOrDefault(x => x.Id_locations == id);
+                if (findLocations != null)
+                {
+                    findLocations.Country = locations.Country;
+                    findLocations.City = locations.City;
+                    findLocations.Address = locations.Address;
+                    findLocations.Square = locations.Square;
+                    findLocations.Count_structures = locations.Count_structures;
+                    locationsContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Место дислокации не найдено!");
             }
             catch (Exception e)
             {

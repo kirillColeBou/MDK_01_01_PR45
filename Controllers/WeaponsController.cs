@@ -56,5 +56,65 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+        /// <summary>
+        /// Метод добавления вооружения
+        /// </summary>
+        /// <param name="weapons">Данные о вооружении</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод добавляет вооружение в базу данных</remarks>
+        [Route("Add")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Add([FromForm] Weapons weapons)
+        {
+            try
+            {
+                WeaponsContext weaponsContext = new WeaponsContext();
+                weaponsContext.Weapons.Add(weapons);
+                weaponsContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления вооружения
+        /// </summary>
+        /// <param name="id">Идентификатор вооружения</param>
+        /// <param name="weapons">Данные о вооружении</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о вооружении в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Weapons weapons)
+        {
+            try
+            {
+                WeaponsContext weaponsContext = new WeaponsContext();
+                var findWeapons = weaponsContext.Weapons.FirstOrDefault(x => x.Id_weapons == id);
+                if (findWeapons != null)
+                {
+                    findWeapons.Name_weapons = weapons.Name_weapons;
+                    findWeapons.Companies = weapons.Companies;
+                    findWeapons.Description = weapons.Description;
+                    findWeapons.Date_update_information = weapons.Date_update_information;
+                    weaponsContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Вооружение не найдено!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

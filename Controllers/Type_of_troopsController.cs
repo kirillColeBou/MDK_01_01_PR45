@@ -56,5 +56,65 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+        /// <summary>
+        /// Метод добавления войск
+        /// </summary>
+        /// <param name="type_of_troops">Данные о войсках</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод добавляет войска в базу данных</remarks>
+        [Route("Add")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Add([FromForm] Type_of_troops type_of_troops)
+        {
+            try
+            {
+                Type_of_troopsContext type_of_troopsContext = new Type_of_troopsContext();
+                type_of_troopsContext.Type_of_troops.Add(type_of_troops);
+                type_of_troopsContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления войск
+        /// </summary>
+        /// <param name="id">Идентификатор войск</param>
+        /// <param name="type_of_troops">Данные о войсках</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о войсках в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Type_of_troops type_of_troops)
+        {
+            try
+            {
+                Type_of_troopsContext type_of_troopsContext = new Type_of_troopsContext();
+                var findType_of_troops = type_of_troopsContext.Type_of_troops.FirstOrDefault(x => x.Id_type_of_troops == id);
+                if (findType_of_troops != null)
+                {
+                    findType_of_troops.Name_type_of_troops = type_of_troops.Name_type_of_troops;
+                    findType_of_troops.Description = type_of_troops.Description;
+                    findType_of_troops.Count_serviceman = type_of_troops.Count_serviceman;
+                    findType_of_troops.Date_foundation = type_of_troops.Date_foundation;
+                    type_of_troopsContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Войска не найдены!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

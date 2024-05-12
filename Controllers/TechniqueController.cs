@@ -56,5 +56,64 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+        /// <summary>
+        /// Метод добавления техники
+        /// </summary>
+        /// <param name="technique">Данные о технике</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод добавляет технику в базу данных</remarks>
+        [Route("Add")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public ActionResult Add([FromForm] Technique technique)
+        {
+            try
+            {
+                TechniqueContext techniqueContext = new TechniqueContext();
+                techniqueContext.Technique.Add(technique);
+                techniqueContext.SaveChanges();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления техники
+        /// </summary>
+        /// <param name="id">Идентификатор техники</param>
+        /// <param name="technique">Данные о технике</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о технике в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Technique technique)
+        {
+            try
+            {
+                TechniqueContext techniqueContext = new TechniqueContext();
+                var findTechnique = techniqueContext.Technique.FirstOrDefault(x => x.Id_technique == id);
+                if (findTechnique != null)
+                {
+                    findTechnique.Name_technique = technique.Name_technique;
+                    findTechnique.Companies = technique.Companies;
+                    findTechnique.Characteristics = technique.Characteristics;
+                    techniqueContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Техника не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }
