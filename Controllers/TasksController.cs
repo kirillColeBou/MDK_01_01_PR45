@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace API_Тепляков.Controllers
 {
@@ -58,7 +59,7 @@ namespace API_Тепляков.Controllers
         /// <summary>
         /// Метод добавления задачи
         /// </summary>
-        /// <param name="task">Данные о задачи</param>
+        /// <param name="task">Данные о задаче</param>
         /// <returns>Статус выполнения запроса</returns>
         /// <remarks>Данный метод добавляет задачу в базу данных</remarks>
         [Route("Add")]
@@ -74,6 +75,42 @@ namespace API_Тепляков.Controllers
                 tasksContext.Tasks.Add(task);
                 tasksContext.SaveChanges();
                 return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+        /// <summary>
+        /// Метод обновления задачи
+        /// </summary>
+        /// <param name="id">Идентификатор задачи</param>
+        /// <param name="task">Данные о задаче</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод обновляет информацию о задаче в базе данных</remarks>
+        [Route("Update")]
+        [HttpPut]
+        [ApiExplorerSettings(GroupName = "v3")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Update(int id, [FromForm] Tasks task)
+        {
+            try
+            {
+                TasksContext tasksContext = new TasksContext();
+                var findTask = tasksContext.Tasks.FirstOrDefault(x => x.Id == id);
+                if (findTask != null)
+                {
+                    findTask.Name = task.Name;
+                    findTask.PriorityId = task.PriorityId;
+                    findTask.DateExecute = task.DateExecute;
+                    findTask.Comment = task.Comment;
+                    findTask.Done = task.Done;
+                    tasksContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Задача не найдена!");
             }
             catch (Exception e)
             {
