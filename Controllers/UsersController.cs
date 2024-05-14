@@ -55,20 +55,22 @@ namespace API_Тепляков.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
-        public ActionResult RegIn([FromForm] string Login, [FromForm] string Password)
+        public ActionResult RegIn([FromForm] string Login, [FromForm] string Password, [FromForm] string Token)
         {
             if (Login == null || Password == null) return StatusCode(403);
             try
             {
                 var newUser = new UsersContext();
                 if (newUser.Users.FirstOrDefault(x => x.Login == Login && x.Password == Password) != null) return StatusCode(401);
+                if (newUser.Users.FirstOrDefault(x => x.Token == Token) == null) return StatusCode(401, "Такого токена нету!");
                 else
                 {
                     string hashPassword = Hash(Password);
                     Users User = new Users()
                     {
                         Login = Login,
-                        Password = hashPassword
+                        Password = hashPassword,
+                        Token = GenerateToken()
                     };
                     newUser.Users.Add(User);
                     newUser.SaveChanges();
@@ -80,6 +82,13 @@ namespace API_Тепляков.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        public static string GenerateToken()
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+            return new string(Enumerable.Repeat(chars, 16).Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         private string Hash(string password)

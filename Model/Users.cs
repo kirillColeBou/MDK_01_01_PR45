@@ -17,5 +17,9 @@
         /// Пароль пользователя
         /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// Токен пользователя
+        /// </summary>
+        public string Token { get; set; }
     }
 }
