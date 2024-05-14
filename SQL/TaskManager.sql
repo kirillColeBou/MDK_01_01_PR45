@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Май 09 2024 г., 22:29
+-- Время создания: Май 14 2024 г., 21:47
 -- Версия сервера: 8.0.30
 -- Версия PHP: 8.1.9
 
@@ -61,7 +61,9 @@ CREATE TABLE `Tasks` (
 --
 
 INSERT INTO `Tasks` (`Id`, `Name`, `PriorityId`, `DateExecute`, `Comment`, `Done`) VALUES
-(8, 'asdds', 1, '2024-04-29', 'asd', 0);
+(8, 'asdds', 1, '2024-04-29', 'asd', 0),
+(11, 'asd', 1, '2024-05-11', 'asd', 0),
+(12, 'asdasd', 0, '0001-01-01', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -72,18 +74,21 @@ INSERT INTO `Tasks` (`Id`, `Name`, `PriorityId`, `DateExecute`, `Comment`, `Done
 CREATE TABLE `Users` (
   `Id` int NOT NULL,
   `Login` varchar(255) NOT NULL,
-  `Password` varchar(255) NOT NULL
+  `Password` varchar(255) NOT NULL,
+  `Token` varchar(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `Users`
 --
 
-INSERT INTO `Users` (`Id`, `Login`, `Password`) VALUES
-(1, 'asd', 'asd'),
-(3, 'asdd', 'asdd'),
-(4, 'asdda', 'asdda'),
-(5, 'kirill', '274efe9fab0b00b7c75b551f2f8f0c13');
+INSERT INTO `Users` (`Id`, `Login`, `Password`, `Token`) VALUES
+(1, 'asd', 'asd', 'testing'),
+(3, 'asdd', 'asdd', 'testing'),
+(4, 'asdda', 'asdda', 'testing'),
+(5, 'kirill', '274efe9fab0b00b7c75b551f2f8f0c13', 'testing'),
+(6, 'qwerty', 'd8578edf8458ce06fbc5bb76a58c5ca4', '0n24AcxvNx8LxCNE'),
+(7, 'asdf', '912ec803b2ce49e4a541068d495ab570', '4YHLJSJxKO14AeKK');
 
 --
 -- Индексы сохранённых таблиц
@@ -121,13 +126,13 @@ ALTER TABLE `Priority`
 -- AUTO_INCREMENT для таблицы `Tasks`
 --
 ALTER TABLE `Tasks`
-  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT для таблицы `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
