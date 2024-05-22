@@ -117,5 +117,77 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+
+        /// <summary>
+        /// Метод удаления задачи
+        /// </summary>
+        /// <param name="id">Идентификатор задачи</param>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о задаче в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete(int id, [FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                TasksContext tasksContext = new TasksContext();
+                var findTasks = tasksContext.Tasks.FirstOrDefault(x => x.Id == id);
+                if (findTasks != null)
+                {
+                    var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                    if (tokenUser != null)
+                    {
+                        tasksContext.Remove(findTasks);
+                        tasksContext.SaveChanges();
+                        return StatusCode(200);
+                    }
+                    else return StatusCode(401, "Токен не найден!");
+                }
+                else return StatusCode(401, "Задача не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Метод удаления задачи
+        /// </summary>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о задаче в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete([FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                TasksContext tasksContext = new TasksContext();
+                var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                if (tokenUser != null)
+                {
+                    tasksContext.RemoveRange(tasksContext.Tasks);
+                    tasksContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Токен не найден!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

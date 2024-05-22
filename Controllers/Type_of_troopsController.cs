@@ -116,5 +116,77 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+
+        /// <summary>
+        /// Метод удаления войск
+        /// </summary>
+        /// <param name="id">Идентификатор войск</param>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о войсках в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete(int id, [FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                Type_of_troopsContext type_of_troopsContext = new Type_of_troopsContext();
+                var findType_of_troops = type_of_troopsContext.Type_of_troops.FirstOrDefault(x => x.Id_type_of_troops == id);
+                if (findType_of_troops != null)
+                {
+                    var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                    if (tokenUser != null)
+                    {
+                        type_of_troopsContext.Remove(findType_of_troops);
+                        type_of_troopsContext.SaveChanges();
+                        return StatusCode(200);
+                    }
+                    else return StatusCode(401, "Токен не найден!");
+                }
+                else return StatusCode(401, "Войска не найдены!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Метод удаления войск
+        /// </summary>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о войсках в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete([FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                Type_of_troopsContext type_of_troopsContext = new Type_of_troopsContext();
+                var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                if (tokenUser != null)
+                {
+                    type_of_troopsContext.RemoveRange(type_of_troopsContext.Type_of_troops);
+                    type_of_troopsContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Токен не найден!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

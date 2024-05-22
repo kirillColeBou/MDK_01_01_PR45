@@ -116,5 +116,77 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+
+        /// <summary>
+        /// Метод удаления вооружения
+        /// </summary>
+        /// <param name="id">Идентификатор вооружения</param>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о вооружении в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete(int id, [FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                WeaponsContext weaponsContext = new WeaponsContext();
+                var findWeapons = weaponsContext.Weapons.FirstOrDefault(x => x.Id_weapons == id);
+                if (findWeapons != null)
+                {
+                    var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                    if (tokenUser != null)
+                    {
+                        weaponsContext.Remove(findWeapons);
+                        weaponsContext.SaveChanges();
+                        return StatusCode(200);
+                    }
+                    else return StatusCode(401, "Токен не найден!");
+                }
+                else return StatusCode(401, "Вооружение не найдено!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Метод удаления вооружения
+        /// </summary>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет всю информацию о вооружении в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete([FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                WeaponsContext weaponsContext = new WeaponsContext();
+                var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                if (tokenUser != null)
+                {
+                    weaponsContext.RemoveRange(weaponsContext.Weapons);
+                    weaponsContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Токен не найден!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

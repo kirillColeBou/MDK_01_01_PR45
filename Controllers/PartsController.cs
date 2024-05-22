@@ -115,5 +115,77 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+
+        /// <summary>
+        /// Метод удаления части
+        /// </summary>
+        /// <param name="id">Идентификатор части</param>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о части в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete(int id, [FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                PartsContext partsContext = new PartsContext();
+                var findParts = partsContext.Parts.FirstOrDefault(x => x.Id_part == id);
+                if (findParts != null)
+                {
+                    var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                    if (tokenUser != null)
+                    {
+                        partsContext.Remove(findParts);
+                        partsContext.SaveChanges();
+                        return StatusCode(200);
+                    }
+                    else return StatusCode(401, "Токен не найден!");
+                }
+                else return StatusCode(401, "Часть не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Метод удаления части
+        /// </summary>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет всю информацию о части в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete([FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                PartsContext partsContext = new PartsContext();
+                var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                if (tokenUser != null)
+                {
+                    partsContext.RemoveRange(partsContext.Parts);
+                    partsContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Токен не найден!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

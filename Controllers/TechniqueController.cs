@@ -115,5 +115,77 @@ namespace API_Тепляков.Controllers
                 return StatusCode(500);
             }
         }
+
+        /// <summary>
+        /// Метод удаления техники
+        /// </summary>
+        /// <param name="id">Идентификатор техники</param>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о технике в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete(int id, [FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                TechniqueContext techniqueContext = new TechniqueContext();
+                var findTechnique = techniqueContext.Technique.FirstOrDefault(x => x.Id_technique == id);
+                if (findTechnique != null)
+                {
+                    var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                    if (tokenUser != null)
+                    {
+                        techniqueContext.Remove(findTechnique);
+                        techniqueContext.SaveChanges();
+                        return StatusCode(200);
+                    }
+                    else return StatusCode(401, "Токен не найден!");
+                }
+                else return StatusCode(401, "Техника не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Метод удаления техники
+        /// </summary>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет всю информацию о технике в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete([FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                TechniqueContext techniqueContext = new TechniqueContext();
+                var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                if (tokenUser != null)
+                {
+                    techniqueContext.Remove(techniqueContext.Technique);
+                    techniqueContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Токен не найден!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

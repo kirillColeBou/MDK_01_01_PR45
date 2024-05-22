@@ -51,7 +51,7 @@ namespace API_Тепляков.Controllers
                 Companies Companies = new CompaniesContext().Companies.First(x => x.Id_companies == id);
                 return Json(Companies);
             }
-            catch (Exception e)
+            catch
             {
                 return StatusCode(500);
             }
@@ -76,18 +76,18 @@ namespace API_Тепляков.Controllers
                 companiesContext.SaveChanges();
                 return StatusCode(200);
             }
-            catch (Exception e)
+            catch
             {
                 return StatusCode(500);
             }
         }
         /// <summary>
-        /// Метод обновления задачи
+        /// Метод обновления роты
         /// </summary>
-        /// <param name="id">Идентификатор задачи</param>
-        /// <param name="companies">Данные о задаче</param>
+        /// <param name="id">Идентификатор роты</param>
+        /// <param name="companies">Данные о роте</param>
         /// <returns>Статус выполнения запроса</returns>
-        /// <remarks>Данный метод обновляет информацию о задаче в базе данных</remarks>
+        /// <remarks>Данный метод обновляет информацию о роте в базе данных</remarks>
         [Route("Update")]
         [HttpPut]
         [ApiExplorerSettings(GroupName = "v3")]
@@ -111,6 +111,78 @@ namespace API_Тепляков.Controllers
                     return StatusCode(200);
                 }
                 else return StatusCode(401, "Рота не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Метод удаления роты
+        /// </summary>
+        /// <param name="id">Идентификатор роты</param>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет информацию о роте в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete(int id, [FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                CompaniesContext companiesContext = new CompaniesContext();
+                var findCompanies = companiesContext.Companies.FirstOrDefault(x => x.Id_companies == id);
+                if (findCompanies != null)
+                {
+                    var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                    if (tokenUser != null)
+                    {
+                        companiesContext.Remove(findCompanies);
+                        companiesContext.SaveChanges();
+                        return StatusCode(200);
+                    }
+                    else return StatusCode(401, "Токен не найден!");
+                }
+                else return StatusCode(401, "Рота не найдена!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// Метод удаления роты
+        /// </summary>
+        /// <param name="Token">Токен пользователя</param>
+        /// <returns>Статус выполнения запроса</returns>
+        /// <remarks>Данный метод удаляет всю информацию о роте в базе данных</remarks>
+        [Route("Delete")]
+        [HttpDelete]
+        [ApiExplorerSettings(GroupName = "v4")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        public ActionResult Delete([FromForm] string Token)
+        {
+            try
+            {
+                UsersContext usersContext = new UsersContext();
+                CompaniesContext companiesContext = new CompaniesContext();
+                var tokenUser = usersContext.Users.FirstOrDefault(x => x.Token == Token);
+                if (tokenUser != null)
+                {
+                    companiesContext.RemoveRange(companiesContext.Companies);
+                    companiesContext.SaveChanges();
+                    return StatusCode(200);
+                }
+                else return StatusCode(401, "Токен не найден!");
             }
             catch (Exception e)
             {
