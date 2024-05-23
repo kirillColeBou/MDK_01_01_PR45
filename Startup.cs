@@ -39,7 +39,7 @@ namespace API_Тепляков
                 });
                 c.SwaggerDoc("v4", new Microsoft.OpenApi.Models.OpenApiInfo
                 {
-                    Version = "v3",
+                    Version = "v4",
                     Title = "Руководство для пользования запросов",
                     Description = "Полное руководство для использования запросов находящихся в проекте"
                 });

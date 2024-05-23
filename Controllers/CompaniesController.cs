@@ -163,13 +163,13 @@ namespace API_Тепляков.Controllers
         /// <param name="Token">Токен пользователя</param>
         /// <returns>Статус выполнения запроса</returns>
         /// <remarks>Данный метод удаляет всю информацию о роте в базе данных</remarks>
-        [Route("Delete")]
+        [Route("Delete/All")]
         [HttpDelete]
         [ApiExplorerSettings(GroupName = "v4")]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
-        public ActionResult Delete([FromForm] string Token)
+        public ActionResult DeleteAll([FromForm] string Token)
         {
             try
             {
@@ -184,7 +184,7 @@ namespace API_Тепляков.Controllers
                 }
                 else return StatusCode(401, "Токен не найден!");
             }
-            catch (Exception e)
+            catch
             {
                 return StatusCode(500);
             }
